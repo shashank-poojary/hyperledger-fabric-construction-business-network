@@ -24,7 +24,7 @@ function dkrm(){
 function restartNetwork() {
 	echo
 
-  #teardown the network and clean the containers and intermediate images
+        #teardown the network and clean the containers and intermediate images
 	docker-compose -f ./network/docker/docker-compose.yaml down
 	dkcl
 	dkrm
