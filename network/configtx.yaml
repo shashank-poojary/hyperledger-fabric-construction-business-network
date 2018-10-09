@@ -1,0 +1,79 @@
+Organizations:
+    - &OrdererOrg
+        Name: OrdererMSP
+        ID: OrdererMSP
+        MSPDir: crypto-config/ordererOrganizations/example.com/msp
+
+    - &ConstructionOrg
+        Name: ConstructionOrgMSP
+        ID: ConstructionOrgMSP
+        MSPDir: crypto-config/peerOrganizations/co.example.com/msp
+        AnchorPeers:
+            - Host: peer0.co.example.com
+              Port: 7051
+
+    - &ServiceProviderOrg
+        Name: ServiceProviderOrgMSP
+        ID: ServiceProviderOrgMSP
+        MSPDir: crypto-config/peerOrganizations/spo.example.com/msp
+        AnchorPeers:
+            - Host: peer0.spo.example.com
+              Port: 7051
+
+    - &RegulatorOrg
+        Name: RegulatorOrgMSP
+        ID: RegulatorOrgMSP
+        MSPDir: crypto-config/peerOrganizations/ro.example.com/msp
+        AnchorPeers:
+            - Host: peer0.ro.example.com
+              Port: 7051
+
+Application: &ApplicationDefaults
+
+    Organizations:
+
+Orderer: &OrdererDefaults
+    OrdererType: kafka
+
+    Addresses:
+        - orderer0.example.com:7050
+        - orderer1.example.com:7050
+
+    BatchTimeout: 1s
+
+    BatchSize:
+
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 98 MB
+        PreferredMaxBytes: 5 MB
+
+    Kafka:
+        Brokers:
+            - kafka0.example.com:9092
+            - kafka1.example.com:9092
+            - kafka2.example.com:9092
+            - kafka3.example.com:9092
+
+    Organizations:
+
+Profiles:
+
+    ThreeOrgsOrdererGenesis:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *ConstructionOrg
+                    - *ServiceProviderOrg
+                    - *RegulatorOrg
+    ThreeOrgsChannel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *ConstructionOrg
+                - *ServiceProviderOrg
+                - *RegulatorOrg

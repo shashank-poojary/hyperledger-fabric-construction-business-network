@@ -1,0 +1,409 @@
+version: '2'
+
+services:
+
+  ca.co.example.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-co
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.co.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/8cbcfd54b98ca056668d5eb1e9e1d2acefd233dafa8063ca2fa7a4d3d541ebb5_sk
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.co.example.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/8cbcfd54b98ca056668d5eb1e9e1d2acefd233dafa8063ca2fa7a4d3d541ebb5_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ../crypto-config/peerOrganizations/co.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerCO
+
+  ca.spo.example.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-spo
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.spo.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/7b4c3ae42057cb7aec815b369074abdb0a4d199722f9890782b9856d4b43c449_sk
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.spo.example.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/7b4c3ae42057cb7aec815b369074abdb0a4d199722f9890782b9856d4b43c449_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ../crypto-config/peerOrganizations/spo.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerSPO
+  
+  ca.ro.example.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-spo
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ro.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/fe2fc0a1804ff3fcd24662414e48bc6af6c3f9e698e734e052165a96369d9dfd_sk
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ro.example.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/fe2fc0a1804ff3fcd24662414e48bc6af6c3f9e698e734e052165a96369d9dfd_sk
+    ports:
+      - "8052:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ../crypto-config/peerOrganizations/ro.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerRO
+
+  orderer0.example.com:
+    container_name: orderer0.example.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt, /etc/hyperledger/crypto/peerOrg1/tls/ca.crt, /etc/hyperledger/crypto/peerOrg2/tls/ca.crt, /etc/hyperledger/crypto/peerOrg3/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
+    depends_on:
+      - kafka0.example.com
+      - kafka1.example.com
+      - kafka2.example.com
+      - kafka3.example.com  
+    command: orderer
+    ports:
+      - 7050:7050
+    volumes:
+        - ../:/etc/hyperledger/configtx
+        - ../crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/:/etc/hyperledger/crypto/orderer
+        - ../crypto-config/peerOrganizations/co.example.com/peers/peer0.ca.example.com/:/etc/hyperledger/crypto/peerOrg1
+        - ../crypto-config/peerOrganizations/ro.example.com/peers/peer0.ro.example.com/:/etc/hyperledger/crypto/peerOrg2
+        - ../crypto-config/peerOrganizations/spo.example.com/peers/peer0.spo.example.com/:/etc/hyperledger/crypto/peerOrg3
+
+
+  orderer1.example.com:
+    container_name: orderer1.example.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt, /etc/hyperledger/crypto/peerOrg1/tls/ca.crt, /etc/hyperledger/crypto/peerOrg2/tls/ca.crt, /etc/hyperledger/crypto/peerOrg3/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
+    depends_on:
+      - kafka0.example.com
+      - kafka1.example.com
+      - kafka2.example.com
+      - kafka3.example.com  
+    command: orderer
+    ports:
+      - 7059:7059
+    volumes:
+        - ../:/etc/hyperledger/configtx
+        - ../crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/:/etc/hyperledger/crypto/orderer
+        - ../crypto-config/peerOrganizations/co.example.com/peers/peer0.ca.example.com/:/etc/hyperledger/crypto/peerOrg1
+        - ../crypto-config/peerOrganizations/ro.example.com/peers/peer0.ro.example.com/:/etc/hyperledger/crypto/peerOrg2
+        - ../crypto-config/peerOrganizations/spo.example.com/peers/peer0.spo.example.com/:/etc/hyperledger/crypto/peerOrg3
+
+
+  couchdb0:
+    container_name: couchdb0
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "9984:5984"
+
+  peer0.co.example.com:
+    container_name: peer0.co.example.com
+    extends:
+      file:   base/base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.co.example.com
+      - CORE_PEER_LOCALMSPID=ConstructionOrgMSP
+      - CORE_PEER_ADDRESS=peer0.co.example.com:7051
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    ports:
+      - 7051:7051
+      - 7053:7053
+    volumes:
+        - ../crypto-config/peerOrganizations/co.example.com/peers/peer0.co.example.com/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - orderer0.example.com
+      - orderer1.example.com
+      - couchdb0
+
+  couchdb1:
+    container_name: couchdb1
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "6984:5984"
+
+  peer1.co.example.com:
+    container_name: peer1.co.example.com
+    extends:
+      file:   base/base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.co.example.com
+      - CORE_PEER_LOCALMSPID=ConstructionOrgMSP
+      - CORE_PEER_ADDRESS=peer1.co.example.com:7051
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    ports:
+      - 7056:7051
+      - 7058:7053
+    volumes:
+        - ./channel/crypto-config/peerOrganizations/co.example.com/peers/co.org1.example.com/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - orderer0.example.com
+      - orderer1.example.com
+      - couchdb1
+
+  couchdb2:
+    container_name: couchdb2
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "7984:5984"
+
+  peer0.spo.example.com:
+    container_name: peer0.spo.example.com
+    extends:
+      file:   base/base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.spo.example.com
+      - CORE_PEER_LOCALMSPID=ServiceProviderOrgMSP
+      - CORE_PEER_ADDRESS=peer0.spo.example.com:7051
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    ports:
+      - 8051:7051
+      - 8053:7053
+    volumes:
+        - ./channel/crypto-config/peerOrganizations/spo.example.com/peers/peer0.spo.example.com/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - orderer0.example.com
+      - orderer1.example.com
+      - couchdb2
+
+  couchdb3:
+    container_name: couchdb3
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "8984:5984"
+
+  peer1.spo.example.com:
+    container_name: peer1.spo.example.com
+    extends:
+      file:   base/base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.spo.example.com
+      - CORE_PEER_LOCALMSPID=ServiceProviderOrgMSP
+      - CORE_PEER_ADDRESS=peer1.spo.example.com:7051
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb3:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    ports:
+      - 8056:7051
+      - 8058:7053
+    volumes:
+        - ./channel/crypto-config/peerOrganizations/org2.example.com/peers/peer1.spo.example.com/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - orderer0.example.com
+      - orderer1.example.com
+      - couchdb3
+
+  couchdb4:
+    container_name: couchdb4
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "8985:5984"
+
+  peer0.ro.example.com:
+    container_name: peer0.ro.example.com
+    extends:
+      file:   base/base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.ro.example.com
+      - CORE_PEER_LOCALMSPID=RegulatorOrgMSP
+      - CORE_PEER_ADDRESS=peer0.ro.example.com:7051
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb4:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    ports:
+      - 8057:7051
+      - 8059:7053
+    volumes:
+        - ../crypto-config/peerOrganizations/ro.example.com/peers/peer0.ro.example.com/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - orderer0.example.com
+      - orderer1.example.com
+      - couchdb4
+
+  couchdb5:
+    container_name: couchdb5
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "8986:5984"
+
+  peer1.ro.example.com:
+    container_name: peer1.ro.example.com
+    extends:
+      file:   base/base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.ro.example.com
+      - CORE_PEER_LOCALMSPID=RegulatorOrgMSP
+      - CORE_PEER_ADDRESS=peer1.ro.example.com:7051
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb5:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    ports:
+      - 8068:7051
+      - 8069:7053
+    volumes:
+        - ../crypto-config/peerOrganizations/ro.example.com/peers/peer1.ro.example.com/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - orderer0.example.com
+      - orderer1.example.com
+      - couchdb5
+
+  zookeeper0.example.com:
+    container_name: zookeeper0.example.com
+    extends:
+      file: base/base.yaml
+      service: zookeeper0.example.com
+
+  zookeeper1.example.com:
+    container_name: zookeeper1.example.com
+    extends:
+      file: base/base.yaml
+      service: zookeeper1.example.com
+
+  zookeeper2.example.com:
+    container_name: zookeeper2.example.com
+    extends:
+      file: base/base.yaml
+      service: zookeeper2.example.com  
+
+  kafka0.example.com:
+    container_name: kafka0.example.com
+    extends:
+      file: base/base.yaml
+      service: kafka0.example.com         
+    depends_on:
+      - zookeeper0.example.com
+      - zookeeper1.example.com
+      - zookeeper2.example.com
+
+  kafka1.example.com:
+    container_name: kafka1.example.com
+    extends:
+      file: base/base.yaml
+      service: kafka1.example.com    
+    depends_on:
+      - zookeeper0.example.com
+      - zookeeper1.example.com
+      - zookeeper2.example.com
+
+  kafka2.example.com:
+    container_name: kafka2.example.com
+    extends:
+      file: base/base.yaml
+      service: kafka2.example.com       
+    depends_on:
+      - zookeeper0.example.com
+      - zookeeper1.example.com
+      - zookeeper2.example.com
+
+  kafka3.example.com:
+    container_name: kafka3.example.com
+    extends:
+      file: base/base.yaml
+      service: kafka3.example.com      
+    depends_on:
+      - zookeeper0.example.com
+      - zookeeper1.example.com
+      - zookeeper2.example.com
+
