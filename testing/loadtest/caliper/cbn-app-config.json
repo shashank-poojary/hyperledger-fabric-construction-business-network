@@ -1,11 +1,11 @@
 {
     "blockchain": {
       "type": "fabric",
-      "config": "/home/shashankp/projects/Block-Chain/Construction/testing/loadtest/caliper/cb-fabric-app.json"
+      "config": "../../../testing/loadtest/caliper/cb-fabric-app.json"
     },
     "command": {
-      "start": "docker-compose -f /home/shashankp/projects/Block-Chain/Construction/network/docker/docker-compose.yaml up -d",
-      "end": "docker-compose -f /home/shashankp/projects/Block-Chain/Construction/network/docker/docker-compose.yaml down;docker rm $(docker ps -aq);docker rmi $(docker images dev* -q)"
+      "start": "docker-compose -f ../../../network/docker/docker-compose.yaml up -d",
+      "end": "docker-compose -f ../../../network/docker/docker-compose.yaml down;docker rm $(docker ps -aq);docker rmi $(docker images dev* -q)"
     },
     "test": {
       "name": "CBN",
@@ -41,7 +41,7 @@
               "status":"ORDER_RECEIVED"
             }
           },
-          "callback": "/home/shashankp/projects/Block-Chain/Construction/testing/loadtest/caliper/cbn-app-createOrder.js"
+          "callback": "../../../testing/loadtest/caliper/cbn-app-createOrder.js"
         },
         {
           "label": "updateOrderStatus",
@@ -60,7 +60,7 @@
           "arguments": {
             "status":"ORDER_CONFIRMED"
           },
-          "callback": "/home/shashankp/projects/Block-Chain/Construction/testing/loadtest/caliper/cbn-app-updateOrder.js"
+          "callback": "../../../testing/loadtest/caliper/cbn-app-updateOrder.js"
         }
       ]
     },
