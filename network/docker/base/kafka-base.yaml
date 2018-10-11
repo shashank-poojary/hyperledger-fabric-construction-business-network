@@ -3,7 +3,7 @@ version: '2'
 services:
 
   zookeeper:
-    image: hyperledger/fabric-zookeeper
+    image: hyperledger/fabric-zookeeper:latest
     environment:
       #
       # server.x=[hostname]:nnnnn[:nnnnn]
@@ -16,7 +16,7 @@ services:
     restart: always
 
   kafka:
-    image: hyperledger/fabric-kafka
+    image: hyperledger/fabric-kafka:latest
     restart: always
     environment:
       # ========================================================================

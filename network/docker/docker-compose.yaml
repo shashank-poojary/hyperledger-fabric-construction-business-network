@@ -3,15 +3,15 @@ version: '2'
 services:
 
   ca.co.example.com:
-    image: hyperledger/fabric-ca
+    image: hyperledger/fabric-ca:latest
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca-co
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.co.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/8cbcfd54b98ca056668d5eb1e9e1d2acefd233dafa8063ca2fa7a4d3d541ebb5_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/baedf7b747cc132b3469261e0dac6cb9d798acd8682eec55cce7e8b6ab6bf355_sk
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.co.example.com-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/8cbcfd54b98ca056668d5eb1e9e1d2acefd233dafa8063ca2fa7a4d3d541ebb5_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/baedf7b747cc132b3469261e0dac6cb9d798acd8682eec55cce7e8b6ab6bf355_sk
     ports:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
@@ -20,15 +20,15 @@ services:
     container_name: ca_peerCO
 
   ca.spo.example.com:
-    image: hyperledger/fabric-ca
+    image: hyperledger/fabric-ca:latest
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca-spo
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.spo.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/7b4c3ae42057cb7aec815b369074abdb0a4d199722f9890782b9856d4b43c449_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/2e7b92063933f3dfa3d705904f9c7d5cf0f76a372d6ec8ca15d4c33b3516bfc8_sk
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.spo.example.com-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/7b4c3ae42057cb7aec815b369074abdb0a4d199722f9890782b9856d4b43c449_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/2e7b92063933f3dfa3d705904f9c7d5cf0f76a372d6ec8ca15d4c33b3516bfc8_sk
     ports:
       - "8054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
@@ -42,10 +42,10 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca-spo
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ro.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/fe2fc0a1804ff3fcd24662414e48bc6af6c3f9e698e734e052165a96369d9dfd_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/fea1765f5f4da795dbb70457786afb446ace645111368fcc52593123e307439d_sk
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ro.example.com-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/fe2fc0a1804ff3fcd24662414e48bc6af6c3f9e698e734e052165a96369d9dfd_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/fea1765f5f4da795dbb70457786afb446ace645111368fcc52593123e307439d_sk
     ports:
       - "8052:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
@@ -55,7 +55,7 @@ services:
 
   orderer0.example.com:
     container_name: orderer0.example.com
-    image: hyperledger/fabric-orderer
+    image: hyperledger/fabric-orderer:latest
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -79,14 +79,14 @@ services:
     volumes:
         - ../:/etc/hyperledger/configtx
         - ../crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/:/etc/hyperledger/crypto/orderer
-        - ../crypto-config/peerOrganizations/co.example.com/peers/peer0.ca.example.com/:/etc/hyperledger/crypto/peerOrg1
+        - ../crypto-config/peerOrganizations/co.example.com/peers/peer0.co.example.com/:/etc/hyperledger/crypto/peerOrg1
         - ../crypto-config/peerOrganizations/ro.example.com/peers/peer0.ro.example.com/:/etc/hyperledger/crypto/peerOrg2
         - ../crypto-config/peerOrganizations/spo.example.com/peers/peer0.spo.example.com/:/etc/hyperledger/crypto/peerOrg3
 
 
   orderer1.example.com:
     container_name: orderer1.example.com
-    image: hyperledger/fabric-orderer
+    image: hyperledger/fabric-orderer:latest
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -110,14 +110,14 @@ services:
     volumes:
         - ../:/etc/hyperledger/configtx
         - ../crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/:/etc/hyperledger/crypto/orderer
-        - ../crypto-config/peerOrganizations/co.example.com/peers/peer0.ca.example.com/:/etc/hyperledger/crypto/peerOrg1
+        - ../crypto-config/peerOrganizations/co.example.com/peers/peer0.co.example.com/:/etc/hyperledger/crypto/peerOrg1
         - ../crypto-config/peerOrganizations/ro.example.com/peers/peer0.ro.example.com/:/etc/hyperledger/crypto/peerOrg2
         - ../crypto-config/peerOrganizations/spo.example.com/peers/peer0.spo.example.com/:/etc/hyperledger/crypto/peerOrg3
 
 
   couchdb0:
     container_name: couchdb0
-    image: hyperledger/fabric-couchdb
+    image: hyperledger/fabric-couchdb:latest
     # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
     # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
     environment:
@@ -156,7 +156,7 @@ services:
 
   couchdb1:
     container_name: couchdb1
-    image: hyperledger/fabric-couchdb
+    image: hyperledger/fabric-couchdb:latest
     # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
     # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
     environment:
@@ -187,7 +187,7 @@ services:
       - 7056:7051
       - 7058:7053
     volumes:
-        - ./channel/crypto-config/peerOrganizations/co.example.com/peers/co.org1.example.com/:/etc/hyperledger/crypto/peer
+        - ../crypto-config/peerOrganizations/co.example.com/peers/peer1.co.example.com/:/etc/hyperledger/crypto/peer
     depends_on:
       - orderer0.example.com
       - orderer1.example.com
@@ -195,7 +195,7 @@ services:
 
   couchdb2:
     container_name: couchdb2
-    image: hyperledger/fabric-couchdb
+    image: hyperledger/fabric-couchdb:latest
     # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
     # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
     environment:
@@ -226,7 +226,7 @@ services:
       - 8051:7051
       - 8053:7053
     volumes:
-        - ./channel/crypto-config/peerOrganizations/spo.example.com/peers/peer0.spo.example.com/:/etc/hyperledger/crypto/peer
+        - ../crypto-config/peerOrganizations/spo.example.com/peers/peer0.spo.example.com/:/etc/hyperledger/crypto/peer
     depends_on:
       - orderer0.example.com
       - orderer1.example.com
@@ -234,7 +234,7 @@ services:
 
   couchdb3:
     container_name: couchdb3
-    image: hyperledger/fabric-couchdb
+    image: hyperledger/fabric-couchdb:latest
     # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
     # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
     environment:
@@ -265,7 +265,7 @@ services:
       - 8056:7051
       - 8058:7053
     volumes:
-        - ./channel/crypto-config/peerOrganizations/org2.example.com/peers/peer1.spo.example.com/:/etc/hyperledger/crypto/peer
+        - ../crypto-config/peerOrganizations/spo.example.com/peers/peer1.spo.example.com/:/etc/hyperledger/crypto/peer
     depends_on:
       - orderer0.example.com
       - orderer1.example.com
@@ -273,7 +273,7 @@ services:
 
   couchdb4:
     container_name: couchdb4
-    image: hyperledger/fabric-couchdb
+    image: hyperledger/fabric-couchdb:latest
     # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
     # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
     environment:
@@ -312,7 +312,7 @@ services:
 
   couchdb5:
     container_name: couchdb5
-    image: hyperledger/fabric-couchdb
+    image: hyperledger/fabric-couchdb:latest
     # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
     # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
     environment:
