@@ -1,0 +1,79 @@
+{
+    "blockchain": {
+      "type": "fabric",
+      "config": "/home/shashankp/projects/Block-Chain/Construction/testing/loadtest/caliper/cb-fabric-app.json"
+    },
+    "command": {
+      "start": "docker-compose -f /home/shashankp/projects/Block-Chain/Construction/network/docker/docker-compose.yaml up -d",
+      "end": "docker-compose -f /home/shashankp/projects/Block-Chain/Construction/network/docker/docker-compose.yaml down;docker rm $(docker ps -aq);docker rmi $(docker images dev* -q)"
+    },
+    "test": {
+      "name": "CBN",
+      "description": " ",
+      "clients": {
+        "type": "local",
+        "number": 5
+      },
+      "rounds": [{
+          "label": "createOrder",
+          "txNumber": [1000, 1000, 1000],
+          "rateControl": [{
+            "type": "fixed-rate",
+            "opts": {
+              "tps": 100
+            }
+          }, {
+            "type": "fixed-rate",
+            "opts": {
+              "tps": 150
+            }
+          }, {
+            "type": "fixed-rate",
+            "opts": {
+              "tps": 200
+            }
+          }],
+          "arguments": {
+            "data":{
+              "type":"Building type",
+              "floors":"No of floors",
+              "surveyNumber":"Survey number",
+              "status":"ORDER_RECEIVED"
+            }
+          },
+          "callback": "/home/shashankp/projects/Block-Chain/Construction/testing/loadtest/caliper/cbn-app-createOrder.js"
+        },
+        {
+          "label": "updateOrderStatus",
+          "txNumber": [1000, 1000],
+          "rateControl": [{
+            "type": "fixed-rate",
+            "opts": {
+              "tps": 100
+            }
+          }, {
+            "type": "fixed-rate",
+            "opts": {
+              "tps": 150
+            }
+          }],
+          "arguments": {
+            "status":"ORDER_CONFIRMED"
+          },
+          "callback": "/home/shashankp/projects/Block-Chain/Construction/testing/loadtest/caliper/cbn-app-updateOrder.js"
+        }
+      ]
+    },
+    "monitor": {
+      "type": ["docker", "process"],
+      "docker": {
+        "name": ["all"]
+      },
+      "process": [{
+        "command": "node",
+        "arguments": "local-client.js",
+        "multiOutput": "avg"
+      }],
+      "interval": 1
+    }
+  }

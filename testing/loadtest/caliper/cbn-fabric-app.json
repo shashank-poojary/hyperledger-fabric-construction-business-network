@@ -1,0 +1,150 @@
+{
+    "fabric": {
+        "cryptodir": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config",
+        "network": {
+            "orderer": {
+                "url": "grpcs://localhost:7050",
+                "mspid": "OrdererMSP",
+                "domain": "example.com",
+                "user": {
+                    "key": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore/262adab62f405724a8d2b28c1da1bf361c8fcc8f07df730e0c9bca52d106c252_sk",
+                    "cert": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/signcerts/Admin@example.com-cert.pem"
+                },
+                "server-hostname": "orderer0.example.com",
+                "tls_cacerts": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/ca.crt"
+            },
+            "org1": {
+                "name": "ConstructionOrg",
+                "mspid": "ConstructionOrgMSP",
+                "domain": "co.example.com",
+                "user": {
+                    "key": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/peerOrganizations/co.example.com/users/Admin@co.example.com/msp/keystore/b9b244c76d441a6283658a5e665b63884e49ed0e8b7da8d1a0de393f1f688403_sk",
+                    "cert": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/peerOrganizations/co.example.com/users/Admin@co.example.com/msp/signcerts/Admin@co.example.com-cert.pem"
+                },
+                "ca": {
+                    "url": "https://localhost:7054",
+                    "name": "ca-co"
+                },
+                "peer1": {
+                    "requests": "grpcs://localhost:7051",
+                    "events": "grpcs://localhost:7053",
+                    "server-hostname": "peer0.co.example.com",
+                    "tls_cacerts": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/peerOrganizations/co.example.com/peers/peer0.co.example.com/tls/ca.crt"
+                },
+                "peer2": {
+                    "requests": "grpcs://localhost:7056",
+                    "events": "grpcs://localhost:7058",
+                    "server-hostname": "peer1.co.example.com",
+                    "tls_cacerts": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/peerOrganizations/co.example.com/peers/peer1.co.example.com/tls/ca.crt"
+                }
+            },
+            "org2": {
+                "name": "ServiceProviderOrg",
+                "mspid": "ServiceProviderOrgMSP",
+                "domain": "spo.example.com",
+                "ca": {
+                    "url": "https://localhost:8054",
+                    "name": "ca-spo"
+                },
+                "peer1": {
+                    "requests": "grpcs://localhost:8051",
+                    "events": "grpcs://localhost:8053",
+                    "server-hostname": "peer0.spo.example.com",
+                    "tls_cacerts": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/peerOrganizations/spo.example.com/peers/peer0.spo.example.com/tls/ca.crt"
+                },
+                "peer2": {
+                    "requests": "grpcs://localhost:8056",
+                    "events": "grpcs://localhost:8058",
+                    "server-hostname": "peer1.spo.example.com",
+                    "tls_cacerts": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/peerOrganizations/spo.example.com/peers/peer1.spo.example.com/tls/ca.crt"
+                }
+            },
+            "org3": {
+                "name": "RegulatorOrg",
+                "mspid": "RegulatorOrgMSP",
+                "domain": "ro.example.com",
+                "ca": {
+                    "url": "https://localhost:8052",
+                    "name": "ca-spo"
+                },
+                "peer1": {
+                    "requests": "grpcs://localhost:8057",
+                    "events": "grpcs://localhost:8059",
+                    "server-hostname": "peer0.ro.example.com",
+                    "tls_cacerts": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/peerOrganizations/ro.example.com/peers/peer0.ro.example.com/tls/ca.crt"
+                },
+                "peer2": {
+                    "requests": "grpcs://localhost:8068",
+                    "events": "grpcs://localhost:8069",
+                    "server-hostname": "peer1.ro.example.com",
+                    "tls_cacerts": "/home/shashankp/projects/Block-Chain/Construction/network/crypto-config/peerOrganizations/ro.example.com/peers/peer1.ro.example.com/tls/ca.crt"
+                }
+            }
+        },
+        "channel": [{
+            "name": "mychannel",
+            "config": "/home/shashankp/projects/Block-Chain/Construction/network/channel.tx",
+            "organizations": ["org1", "org2", "org3"],
+            "deployed": false
+        }],
+        "chaincodes": [{
+            "id": "mycc",
+            "path": "/home/shashankp/projects/Block-Chain/Construction/chaincode",
+            "language": "node",
+            "version": "v0",
+            "channel": "mychannel",
+            "metaPath": "/home/shashankp/projects/Block-Chain/Construction/chaincode/META-INF/"
+        }],
+        "endorsement-policy": {
+            "identities": [{
+                    "role": {
+                        "name": "member",
+                        "mspId": "ConstructionOrgMSP"
+                    }
+                },
+                {
+                    "role": {
+                        "name": "member",
+                        "mspId": "ServiceProviderOrgMSP"
+                    }
+                },
+                {
+                    "role": {
+                        "name": "member",
+                        "mspId": "RegulatorOrgMSP"
+                    }
+                },
+                {
+                    "role": {
+                        "name": "admin",
+                        "mspId": "ConstructionOrgMSP"
+                    }
+                }
+            ],
+            "policy": {
+                "3-of": [{
+                    "signed-by": 0
+                }, 
+                {
+                    "signed-by": 1
+                },
+                {
+                    "signed-by": 2
+                },
+                {
+                    "signed-by": 3
+                }]
+            }
+        },
+        "context": {
+            "createOrder": "mychannel",
+            "updateOrderStatus": "mychannel"
+        }
+    },
+    "info": {
+        "Version": "1.0.5",
+        "Size": "6 Peers",
+        "Orderer": "Solo",
+        "Distribution": "Single Host"
+    }
+}
