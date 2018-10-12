@@ -40,7 +40,7 @@ services:
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-spo
+      - FABRIC_CA_SERVER_CA_NAME=ca-ro
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ro.example.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/fea1765f5f4da795dbb70457786afb446ace645111368fcc52593123e307439d_sk
       - FABRIC_CA_SERVER_TLS_ENABLED=true

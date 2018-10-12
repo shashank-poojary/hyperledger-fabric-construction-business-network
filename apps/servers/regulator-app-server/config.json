@@ -1,0 +1,15 @@
+{
+   "host":"localhost",
+   "port":"4000",
+   "jwtsecret":"H1@133_QWERT",
+   "jwt_expiretime": "36000",
+   "channelName":"mychannel",
+   "CC_SRC_PATH":"../network",
+   "eventWaitTime":"10000",
+   "admins":[
+      {
+         "username":"admin",
+         "secret":"adminpw"
+      }
+   ]
+}

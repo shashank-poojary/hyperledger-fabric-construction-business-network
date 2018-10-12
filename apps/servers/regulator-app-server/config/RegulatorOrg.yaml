@@ -1,0 +1,14 @@
+
+name: "regulator-app-server"
+
+x-type: "hlfv1"
+
+description: "Sample App Transfer Network - client definition for Org1"
+
+version: "1.0"
+
+client:
+  organization: RegulatorOrg
+  credentialStore:
+    # [Optional]. Specific to Composer environment
+    wallet: wallet-name

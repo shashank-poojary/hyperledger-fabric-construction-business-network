@@ -65,7 +65,7 @@
                 "domain": "ro.example.com",
                 "ca": {
                     "url": "https://localhost:8052",
-                    "name": "ca-spo"
+                    "name": "ca-ro"
                 },
                 "peer1": {
                     "requests": "grpcs://localhost:8057",
