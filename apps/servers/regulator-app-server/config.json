@@ -1,15 +1,22 @@
 {
-   "host":"localhost",
-   "port":"4000",
-   "jwtsecret":"H1@133_QWERT",
-   "jwt_expiretime": "36000",
-   "channelName":"mychannel",
-   "CC_SRC_PATH":"../network",
-   "eventWaitTime":"10000",
-   "admins":[
-      {
-         "username":"admin",
-         "secret":"adminpw"
-      }
-   ]
+    "host": "localhost",
+    "port": "4000",
+    "jwtsecret": "H1@133_QWERT",
+    "jwt_expiretime": "36000",
+    "channelName": "mychannel",
+    "channelConfigPath": "../../../../network/channel.tx",
+    "CC_SRC_PATH": "../network",
+    "eventWaitTime": "10000",
+    "admins": [{
+        "username": "admin",
+        "secret": "adminpw"
+    }],
+    "peers": ["peer0.ro.example.com", "peer1.ro.example.com"],
+    "chaincode": {
+        "chaincodeName": "mycc",
+        "chaincodePath": "../../../chaincode/",
+        "chaincodeVersion": "v0",
+        "chaincodeType": "node",
+        "metadataPath":"../../../chaincode/META-INF/"
+    }
 }

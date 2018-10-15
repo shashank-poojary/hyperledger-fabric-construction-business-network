@@ -107,7 +107,7 @@ peers:
       path: ../../../network/crypto-config/peerOrganizations/ro.example.com/peers/peer0.ro.example.com/tls/ca.crt
 
   peer1.ro.example.com:
-    url: grpcs://localhost:8069
+    url: grpcs://localhost:8068
     eventUrl: grpcs://localhost:8069
     grpcOptions:
       ssl-target-name-override: peer1.ro.example.com

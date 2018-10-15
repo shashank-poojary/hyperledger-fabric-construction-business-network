@@ -35,3 +35,13 @@ function restartNetwork() {
 }
 
 restartNetwork
+
+pm2 delete regulator-app-server
+
+sleep 3m
+
+cd ./apps/servers/regulator-app-server/
+pm2 start ./process.json
+cd ../../../
+
+pm2 logs all
