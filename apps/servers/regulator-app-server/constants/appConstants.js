@@ -13,5 +13,6 @@ module.exports = {
         collections: {
             users: 'users'
         }
-    }
+    },
+    setupTimeout: 5000
 }

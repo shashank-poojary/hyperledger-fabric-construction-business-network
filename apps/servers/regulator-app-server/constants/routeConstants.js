@@ -1,7 +1,7 @@
-
-module.exports = { 
-    BASE :'/api',
-    USER : '/user'
+module.exports = {
+    BASE: '/api',
+    USER: '/user',
+    SETUP: '/setup'
     // CREATE_CHANNEL:'/channels',
     // JOIN_CHANNEL: '/channels/:channelName/peers',
     // INSTALL_CHAINCODE:'/chaincodes',
@@ -10,4 +10,3 @@ module.exports = {
     // TRANSACTION:'/channels/:channelName/transactions/:trxnId',
     // MOBILE_NUMBER:'/channels/:channelName/chaincodes/:chaincodeName/mobileNumber/:mobileNumber'
 }
-

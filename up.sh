@@ -38,7 +38,9 @@ restartNetwork
 
 pm2 delete regulator-app-server
 
-sleep 3m
+echo "Sleeping for 5s"
+
+sleep 5s
 
 cd ./apps/servers/regulator-app-server/
 pm2 start ./process.json

@@ -17,6 +17,10 @@
         "chaincodePath": "../../../chaincode/",
         "chaincodeVersion": "v0",
         "chaincodeType": "node",
-        "metadataPath":"../../../chaincode/META-INF/"
+        "metadataPath": "../../../chaincode/META-INF/"
+    },
+    "instantiation": {
+        "fcn": "init",
+        "args": []
     }
 }

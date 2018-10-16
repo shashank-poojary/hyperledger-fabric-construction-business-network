@@ -12,6 +12,9 @@ require('./config.js');
 var hfc = require('fabric-client');
 
 var routeConstants = require('./constants/routeConstants');
+var {
+	BASE
+} = routeConstants;
 
 
 var host = process.env.HOST || hfc.getConfigSetting('host');
@@ -19,10 +22,9 @@ var port = process.env.PORT || hfc.getConfigSetting('port');
 
 //Routes
 var users = require('./routes/users');
-// var channels = require('./routes/channel');
-// var chaincodeRoute = require('./routes/chaincode');
+var setup = require('./routes/setup');
+
 // var invokeRoute = require('./routes/Invoke');
-// var transactionRoute = require('./routes/transaction');
 
 app.options('*', cors());
 app.use(cors());
@@ -33,12 +35,10 @@ app.use(bodyParser.urlencoded({
 
 app.use(bearerToken());
 
+app.use(BASE, users);
+app.use(BASE, setup);
 
-app.use(routeConstants.BASE, users);
-// app.use(routeConstants.BASE, channels);
-// app.use(routeConstants.BASE, chaincodeRoute);
 // app.use(routeConstants.BASE, invokeRoute);
-// app.use(routeConstants.BASE, transactionRoute);
 
 var server = http.createServer(app).listen(port, function () {});
 logger.info('****************** SERVER STARTED ************************');
